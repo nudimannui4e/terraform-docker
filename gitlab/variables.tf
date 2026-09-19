@@ -12,24 +12,24 @@ variable "docker_image" {
 
 variable "http_port_internal" {
   description = "Container http port (default 80)"
-  type        = int
+  type        = number
   default     = 80
 }
 
 variable "http_port_external" {
   description = "Host http port (default 8080)"
-  type        = int
+  type        = number
   default     = 8080
 }
 
 variable "ssh_port_container" {
   description = "Container ssh port (default 22)"
-  type        = int
+  type        = number
   default     = 22
 }
 
 variable "ssh_port_host" {
   description = "Host ssh port (default 2222)"
-  type        = int
+  type        = number
   default     = 2222
 }
