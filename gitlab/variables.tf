@@ -22,13 +22,13 @@ variable "http_port_external" {
   default     = 8080
 }
 
-variable "ssh_port_container" {
+variable "ssh_port_internal" {
   description = "Container ssh port (default 22)"
   type        = number
   default     = 22
 }
 
-variable "ssh_port_host" {
+variable "ssh_port_external" {
   description = "Host ssh port (default 2222)"
   type        = number
   default     = 2222
