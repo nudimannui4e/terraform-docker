@@ -12,7 +12,7 @@ provider "docker" {}
 
 # --- download GitLab CE ---
 resource "docker_image" "gitlab" {
-  name        = "alpinelinux/gitlab:19.1.8"
+  name        = var.docker_image
   keep_localy = true
 }
 
@@ -31,16 +31,16 @@ resource "docker_volume" "gitlab_data" {
 
 # --- running container GitLab ---
 resource "docker_container" "gitlab" {
-  name  = "gitlab"
+  name  = var.container_name
   image = docker_image.gitlab.image_id
   # Forward 80, 22 ports
   ports {
-    internal = 80
-    external = 8080
+    internal = var.http_port_internal
+    external = var.http_port_external
   }
   ports {
-    internal = 22
-    external = 2222
+    internal = var.ssh_port_internal
+    external = var.ssh_port_external
   }
   # Mount volumes in default places
   volumes {
