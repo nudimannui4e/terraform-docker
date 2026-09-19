@@ -7,7 +7,7 @@ variable "container_name" {
 variable "docker_image" {
   description = "Value of the image for the Docker container"
   type        = string
-  default     = "alpinelinux/gitlab:19.1.8"
+  default     = "gitlab/gitlab-ce:latest"
 }
 
 variable "http_port_internal" {
