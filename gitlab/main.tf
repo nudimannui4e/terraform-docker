@@ -13,7 +13,7 @@ provider "docker" {}
 # --- download GitLab CE ---
 resource "docker_image" "gitlab" {
   name        = var.docker_image
-  keep_localy = true
+  keep_locally = true
 }
 
 # --- Create naming volumes for keep data ---
