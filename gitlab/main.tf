@@ -12,7 +12,7 @@ provider "docker" {}
 
 # --- download GitLab CE ---
 resource "docker_image" "gitlab" {
-  name        = var.docker_image
+  name         = var.docker_image
   keep_locally = true
 }
 
