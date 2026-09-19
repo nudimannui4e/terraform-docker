@@ -36,7 +36,7 @@ resource "docker_container" "gitlab" {
   # Forward 80, 22 ports
   ports {
     internal = var.http_port_internal
-    external = var.http_port_external
+    external = var.http_port_internal
   }
   ports {
     internal = var.ssh_port_internal
@@ -59,7 +59,7 @@ resource "docker_container" "gitlab" {
   # Set external URL
   # Using localhost:8080
   env = [
-    "GITLAB_OMNIBUS_CONFIG=external_url 'http://localhost:${var.http_port_external}'"
+    "GITLAB_OMNIBUS_CONFIG=external_url 'http://localhost/'"
   ]
 
   # GitLab required extended shared memory
