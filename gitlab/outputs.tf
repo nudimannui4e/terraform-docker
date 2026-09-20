@@ -1,7 +1,7 @@
 output "connection" {
   description = "Параметры подключения к GitLab"
   value = {
-    web_url       = "http://localhost:${var.http_port_external}"
+    web_url       = "http://localhost/"
     ssh_port      = var.ssh_port_external
     ssh_clone_url = "ssh://git@localhost:${var.ssh_port_external}"
   }

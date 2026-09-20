@@ -57,7 +57,7 @@ resource "docker_container" "gitlab" {
   }
 
   # Set external URL
-  # Using localhost:8080
+  # Using localhost
   env = [
     "GITLAB_OMNIBUS_CONFIG=external_url 'http://localhost/'"
   ]
