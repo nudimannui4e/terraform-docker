@@ -18,6 +18,10 @@ resource "docker_container" "kafka-controller" {
     internal = 9092
     external = 9092 + count.index
   }
+  ports {
+    internal = 9308
+    external = 9308 + count.index
+  }
 
   env = [
     "KAFKA_NODE_ID=${count.index + 1}",
@@ -32,16 +36,26 @@ resource "docker_container" "kafka-controller" {
     "KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR=1",
     "KAFKA_TRANSACTION_STATE_LOG_MIN_ISR=1",
     "KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS=0",
-    "CLUSTER_ID=${local.cluster_id}"
+    "CLUSTER_ID=${local.cluster_id}",
+    "KAFKA_OPTS=-javaagent:/opt/jmx/jmx_prometheus_javaagent.jar=9308:/opt/jmx/kafka-jmx.yml"
   ]
 
   volumes {
-    volume_name    = docker_volume.kafka_data.name
+    volume_name    = docker_volume.kafka_data[count.index].name
     container_path = "/var/lib/kafka/data"
+  }
+
+  mounts {
+    target = "/opt/jmx"
+    source = "${abspath(path.module)}/files/jmx"
+    type = "bind"
   }
 
   networks_advanced {
     name = docker_network.kafka_kraft.name
     aliases = ["kafka-${count.index + 1}"]
   }
+
+  depends_on = [null_resource.jmx_agent_download]
+
 }
