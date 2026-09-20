@@ -3,27 +3,34 @@ resource "docker_image" "kraft" {
   keep_locally = true
 }
 
+locals {
+  cluster_id = "MkU3OEVBNTcwNTJENDM2Qk"
+  quorum_voters = "1@kafka-1:9093,2@kafka-2:9093,3@kafka-3@9093"
+}
+
 resource "docker_container" "kafka-controller" {
-  name  = "kafka-controller"
+  count = 3
+  name  = "kafka-${count.index + 1}"
   image = docker_image.kraft.name
   ports {
     internal = 9092
-    external = 9092
+    external = 9092 + count.index
   }
 
   env = [
-    "KAFKA_NODE_ID: 1",
+    "KAFKA_NODE_ID: ${count.index + 1}",
     "KAFKA_PROCESS_ROLES: broker,controller",
     "KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093",
-    "KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092",
+    "KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-${count.index + 1}:9092",
     "KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER",
     "KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT",
-    "KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093",
-    "KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1",
+    "KAFKA_CONTROLLER_QUORUM_VOTERS: ${local.quorum_voters}",
+    "KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3",
+    "KAFKA_MIN_INSYNC_REPLICAS: 2"
     "KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1",
     "KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1",
     "KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0",
-    "CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk"
+    "CLUSTER_ID: ${local.cluster_id}"
   ]
 
   volumes {
@@ -33,5 +40,6 @@ resource "docker_container" "kafka-controller" {
 
   networks_advanced {
     name = docker_network.kafka_kraft.name
+    aliases = ["kafka-${count.index + 1}"]
   }
 }
