@@ -1,10 +1,10 @@
 resource "docker_image" "kraft" {
-  name = "apache/kafka:4.3.1"
+  name         = "apache/kafka:4.3.1"
   keep_locally = true
 }
 
 resource "docker_container" "kafka-controller" {
-  name = "kafka-controller"
+  name  = "kafka-controller"
   image = docker_image.kraft.name
   ports {
     internal = 9092
@@ -12,22 +12,22 @@ resource "docker_container" "kafka-controller" {
   }
 
   env = [
-      "KAFKA_NODE_ID: 1",
-      "KAFKA_PROCESS_ROLES: broker,controller",
-      "KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093",
-      "KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092",
-      "KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER",
-      "KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT",
-      "KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093",
-      "KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1",
-      "KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1",
-      "KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1",
-      "KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0",
-      "CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk"
+    "KAFKA_NODE_ID: 1",
+    "KAFKA_PROCESS_ROLES: broker,controller",
+    "KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093",
+    "KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092",
+    "KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER",
+    "KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT",
+    "KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093",
+    "KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1",
+    "KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1",
+    "KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1",
+    "KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0",
+    "CLUSTER_ID: MkU3OEVBNTcwNTJENDM2Qk"
   ]
 
   volumes {
-    volume_name = docker_volume.kafka_data.name
+    volume_name    = docker_volume.kafka_data.name
     container_path = "/var/lib/kafka/data"
   }
 
