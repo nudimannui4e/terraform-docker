@@ -45,15 +45,21 @@ resource "docker_container" "kafka-controller" {
     container_path = "/var/lib/kafka/data"
   }
 
-  mounts {
-    target = "/opt/jmx"
-    source = "${abspath(path.module)}/files/jmx"
-    type = "bind"
+  volumes {
+    host_path      = "${abspath(path.module)}/files/jmx"
+    container_path = "/opt/jmx"
   }
 
   networks_advanced {
     name = docker_network.kafka_kraft.name
     aliases = ["kafka-${count.index + 1}"]
+  }
+
+  healthcheck {
+    test     = ["CMD-SHELL", "kafka-topics.sh --bootstrap-server localhost:9092 --list > /dev/null 2>&1 || exit 1"]
+    interval = "10s"
+    timeout  = "5s"
+    retries  = 5
   }
 
   depends_on = [null_resource.jmx_agent_download]
