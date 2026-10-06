@@ -11,4 +11,8 @@ terraform {
   }
 }
 
-provider "docker" {}
+provider "docker" {
+  // docker context ls
+  // указываем путь к сокету
+  host = "unix:///Users/ivliev/.docker/run/docker.sock"
+}
